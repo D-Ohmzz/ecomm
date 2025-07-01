@@ -1,24 +1,25 @@
 package com.ecomm.ecomm.service;
 
 import com.ecomm.ecomm.model.CategoryModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CategoryServiceImplementation implements CategoryService {
 
     private List<CategoryModel> categories = new ArrayList<>();
+    int intid;
+    long id;
 
     @Override
     public List<CategoryModel> getAllCategories() {
         return categories;
     }
-    int intid;
-    long id;
+
     @Override
     public void createCategory(CategoryModel category) {
         //Implementing id auto generation
@@ -37,15 +38,13 @@ public class CategoryServiceImplementation implements CategoryService {
     public String deleteCategory(Long id) {
         CategoryModel category = categories.stream()
                 .filter(c->c.getId().equals(id))
-                .findFirst().orElse(null);
-        if(category == null){
-            return "Category not found!";
-        }else{
-            categories.remove(category);
-            return " Category with id: "+id+" has been deleted successfully!";
+                .findFirst()
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+
+        categories.remove(category);
+        return " Category with id: "+id+" has been deleted successfully!";
         }
 
     }
 
 
-}
