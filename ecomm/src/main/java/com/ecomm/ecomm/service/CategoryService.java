@@ -1,4 +1,12 @@
 package com.ecomm.ecomm.service;
 
-public class CategoryService {
+import com.ecomm.ecomm.model.CategoryModel;
+import org.springframework.context.annotation.Bean;
+
+import java.util.List;
+
+public interface CategoryService {
+    List<CategoryModel> getAllCategories();
+    void createCategory(CategoryModel category);
+    String deleteCategory(Long id);
 }
