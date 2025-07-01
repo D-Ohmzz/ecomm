@@ -1,38 +1,41 @@
 package com.ecomm.ecomm.controller;
 
 import com.ecomm.ecomm.service.CategoryService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.ArrayList;
 import com.ecomm.ecomm.model.CategoryModel;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class CategoryController {
     private CategoryService categoryservice;
-    public CategoryController(CategoryService categoryservice){
-        this.categoryservice=categoryservice;
+
+    public CategoryController(CategoryService categoryservice) {
+        this.categoryservice = categoryservice;
     }
 
 
-
     @GetMapping("/api/public/categories")
-    public List<CategoryModel> getAllCategories(){
+    public List<CategoryModel> getAllCategories() {
         return categoryservice.getAllCategories();
     }
 
     @PostMapping("/api/public/category")
-    public String createCategory(@RequestBody CategoryModel category){
+    public String createCategory(@RequestBody CategoryModel category) {
         categoryservice.createCategory(category);
         return "Category added successfully!";
     }
-    
+
     @DeleteMapping("/api/admin/categories/{id}")
-    public String deleteCategory(@PathVariable Long id){
-       String status =  categoryservice.deleteCategory(id);
-        return status;
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+        try {
+            String status = categoryservice.deleteCategory(id);
+            return new ResponseEntity<>(status, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
     }
-
-
-
 }
