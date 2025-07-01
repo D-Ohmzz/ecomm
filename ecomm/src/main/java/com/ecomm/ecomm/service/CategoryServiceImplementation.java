@@ -1,5 +1,46 @@
 package com.ecomm.ecomm.service;
 
-public class categoryServiceImplementation implements CategoryService {
+import com.ecomm.ecomm.model.CategoryModel;
+import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class CategoryServiceImplementation implements CategoryService {
+
+    private List<CategoryModel> categories = new ArrayList<>();
+
+    @Override
+    public List<CategoryModel> getAllCategories() {
+        return categories;
+    }
+    int intid;
+    long id;
+    @Override
+    public void createCategory(CategoryModel category) {
+        //Implementing id auto generation
+        if (categories.isEmpty()) {
+            intid = 1;
+        }else {
+            intid++;
+        }
+        id = intid;
+        category.setId(id);
+        categories.add(category);
+
+    }
+
+    @Override
+    public String deleteCategory(Long id) {
+        CategoryModel category = categories.stream()
+                .filter(c->c.getId().equals(id))
+                .findFirst().get();
+        categories.remove(category);
+        return " Category with id: "+id+" has been deleted successfully!";
+    }
+
 
 }
