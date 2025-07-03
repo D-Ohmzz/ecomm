@@ -45,7 +45,19 @@ public class CategoryServiceImplementation implements CategoryService {
         return " Category with id: "+id+" has been deleted successfully!";
         }
 
+    @Override
+    public void updateCategory(CategoryModel category, Long id) {
+        CategoryModel categoryFromArrayList = categories.stream()
+                .filter(c->c.getId().equals(id))
+                .findFirst()
+               .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+
+        int index = categories.indexOf(categoryFromArrayList);
+        category.setId(id);
+        categories.set(index, category);
     }
+
+}
 
 
     

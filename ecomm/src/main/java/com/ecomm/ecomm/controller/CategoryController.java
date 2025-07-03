@@ -21,13 +21,19 @@ public class CategoryController {
     @GetMapping("/api/public/categories")
     public ResponseEntity<List<CategoryModel>> getAllCategories() {
         List<CategoryModel> categories =  categoryservice.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.FOUND);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @PostMapping("/api/public/category")
     public ResponseEntity<String> createCategory(@RequestBody CategoryModel category) {
         categoryservice.createCategory(category);
         return new ResponseEntity<>( "Category added successfully!", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/api/admin/categories/{id}")
+    public ResponseEntity<String>updateCategory(@RequestBody CategoryModel category, @PathVariable Long id){
+        categoryservice.updateCategory(category, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/api/admin/categories/{id}")
