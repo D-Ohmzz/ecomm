@@ -10,6 +10,7 @@ import com.ecomm.ecomm.model.CategoryModel;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequestMapping("/api")
 public class CategoryController {
     private CategoryService categoryservice;
 
@@ -18,25 +19,29 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/api/public/categories")
+    //@GetMapping("/api/public/categories")
+    @RequestMapping(value="/public/categories", method = RequestMethod.GET)
     public ResponseEntity<List<CategoryModel>> getAllCategories() {
         List<CategoryModel> categories =  categoryservice.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping("/api/public/category")
+    //@PostMapping("/api/admin/category")
+    @RequestMapping(value="/admin/category", method = RequestMethod.POST)
     public ResponseEntity<String> createCategory(@RequestBody CategoryModel category) {
         categoryservice.createCategory(category);
         return new ResponseEntity<>( "Category added successfully!", HttpStatus.CREATED);
     }
 
-    @PutMapping("/api/admin/categories/{id}")
+    //@PutMapping("/api/admin/categories/{id}")
+    @RequestMapping(value="/admin/categories/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String>updateCategory(@RequestBody CategoryModel category, @PathVariable Long id){
         categoryservice.updateCategory(category, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/api/admin/categories/{id}")
+    //@DeleteMapping("/api/admin/categories/{id}")
+    @RequestMapping(value="/admin/categories/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         try {
             String status = categoryservice.deleteCategory(id);
