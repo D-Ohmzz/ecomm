@@ -1,6 +1,6 @@
 package com.ecomm.ecomm.service;
 
-import com.ecomm.ecomm.model.CategoryModel;
+import com.ecomm.ecomm.model.Category;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,17 +11,17 @@ import java.util.List;
 @Service
 public class CategoryServiceImplementation implements CategoryService {
 
-    private List<CategoryModel> categories = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
     int intid;
     long id;
 
     @Override
-    public List<CategoryModel> getAllCategories() {
+    public List<Category> getAllCategories() {
         return categories;
     }
 
     @Override
-    public void createCategory(CategoryModel category) {
+    public void createCategory(Category category) {
         //Implementing id auto generation
         if (categories.isEmpty()) {
             intid = 1;
@@ -36,7 +36,7 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public String deleteCategory(Long id) {
-        CategoryModel category = categories.stream()
+        Category category = categories.stream()
                 .filter(c->c.getId().equals(id))
                 .findFirst()
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
@@ -46,8 +46,8 @@ public class CategoryServiceImplementation implements CategoryService {
         }
 
     @Override
-    public void updateCategory(CategoryModel category, Long id) {
-        CategoryModel categoryFromArrayList = categories.stream()
+    public void updateCategory(Category category, Long id) {
+        Category categoryFromArrayList = categories.stream()
                 .filter(c->c.getId().equals(id))
                 .findFirst()
                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));

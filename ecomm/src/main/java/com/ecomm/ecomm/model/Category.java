@@ -1,6 +1,11 @@
 package com.ecomm.ecomm.model;
 
-public class CategoryModel {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Category {
+    @Id
     private Long id;
     private String categoryName;
 
@@ -8,7 +13,7 @@ public class CategoryModel {
         return id;
     }
 
-    public CategoryModel(Long id, String categoryName) {
+    public Category(Long id, String categoryName) {
         this.id = id;
         this.categoryName = categoryName;
     }

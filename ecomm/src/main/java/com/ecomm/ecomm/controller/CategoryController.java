@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.ecomm.ecomm.model.CategoryModel;
+import com.ecomm.ecomm.model.Category;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -21,21 +21,21 @@ public class CategoryController {
 
     //@GetMapping("/api/public/categories")
     @RequestMapping(value="/public/categories", method = RequestMethod.GET)
-    public ResponseEntity<List<CategoryModel>> getAllCategories() {
-        List<CategoryModel> categories =  categoryservice.getAllCategories();
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories =  categoryservice.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     //@PostMapping("/api/admin/category")
     @RequestMapping(value="/admin/category", method = RequestMethod.POST)
-    public ResponseEntity<String> createCategory(@RequestBody CategoryModel category) {
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
         categoryservice.createCategory(category);
         return new ResponseEntity<>( "Category added successfully!", HttpStatus.CREATED);
     }
 
     //@PutMapping("/api/admin/categories/{id}")
     @RequestMapping(value="/admin/categories/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String>updateCategory(@RequestBody CategoryModel category, @PathVariable Long id){
+    public ResponseEntity<String>updateCategory(@RequestBody Category category, @PathVariable Long id){
         categoryservice.updateCategory(category, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
