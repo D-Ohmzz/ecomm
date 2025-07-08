@@ -1,11 +1,16 @@
 package com.ecomm.ecomm.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity
+import javax.annotation.processing.Generated;
+
+@Entity(name = "categories")
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String categoryName;
 
