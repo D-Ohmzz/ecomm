@@ -53,9 +53,8 @@ public class CategoryServiceImplementation implements CategoryService {
     public void updateCategory(Category category, Long id) {
         Optional<Category>optionalCategory= categoryRepository.findById(id);
         if(optionalCategory.isPresent()){
-            Category categoryFromDb = optionalCategory.get();
-            categoryFromDb.setCategoryName(category.getCategoryName());
-            categoryRepository.save(categoryFromDb);
+            category.setId(id);
+            categoryRepository.save(category);
         }
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found");
