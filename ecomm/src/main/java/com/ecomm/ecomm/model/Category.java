@@ -23,6 +23,10 @@ public class Category {
         this.categoryName = categoryName;
     }
 
+    public Category(){
+
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
