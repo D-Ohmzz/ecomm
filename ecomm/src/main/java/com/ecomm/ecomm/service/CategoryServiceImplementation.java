@@ -1,5 +1,6 @@
 package com.ecomm.ecomm.service;
 
+import com.ecomm.ecomm.exceptions.ResourceNotFoundException;
 import com.ecomm.ecomm.model.Category;
 import com.ecomm.ecomm.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class CategoryServiceImplementation implements CategoryService {
             categoryRepository.deleteById(id);
             return " Category with id: " + id + " has been deleted successfully!";
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found");
+            throw new ResourceNotFoundException("Category","categoryId",id);
         }
     }
 
@@ -57,7 +58,7 @@ public class CategoryServiceImplementation implements CategoryService {
             categoryRepository.save(category);
         }
         else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found");
+            throw new ResourceNotFoundException("Category","categoryId",id);
         }
 
         /*List<Category> categories = categoryRepository.findAll();
