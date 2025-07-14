@@ -1,17 +1,15 @@
 package com.ecomm.ecomm.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.exceptions.ResourceNotFoundException;
 import com.ecomm.ecomm.model.Category;
 import com.ecomm.ecomm.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryServiceImplementation implements CategoryService {
@@ -25,7 +23,13 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List <Category> categories = categoryRepository.findAll();
+        if(!(categories.isEmpty())){
+            return categories;
+        }
+        else{
+            throw new APIException("No Categories have been created !!!");
+        }
     }
 
     @Override
@@ -46,8 +50,8 @@ public class CategoryServiceImplementation implements CategoryService {
         Category category = categories.stream()
         .filter(c->c.getId().equals(id))
         .findFirst()
-        orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"))*/
-        ;
+        orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));*/
+
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isPresent()) {
             categoryRepository.deleteById(id);
