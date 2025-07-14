@@ -2,7 +2,11 @@ package com.ecomm.ecomm.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.ecomm.ecomm.payload.CategoryDTO;
+import com.ecomm.ecomm.payload.CategoryResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +25,18 @@ public class CategoryServiceImplementation implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List <Category> categories = categoryRepository.findAll();
         if(!(categories.isEmpty())){
-            return categories;
+            List<CategoryDTO> categoryDTOS = categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class))
+                    .toList();
+            CategoryResponse categoryResponse = new CategoryResponse();
+            categoryResponse.setContent(categoryDTOS);
+            return categoryResponse;
         }
         else{
             throw new APIException("No Categories have been created !!!");

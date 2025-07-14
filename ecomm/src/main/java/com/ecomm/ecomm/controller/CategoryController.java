@@ -1,5 +1,6 @@
 package com.ecomm.ecomm.controller;
 
+import com.ecomm.ecomm.payload.CategoryResponse;
 import com.ecomm.ecomm.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,9 @@ public class CategoryController {
 
     //@GetMapping("/api/public/categories")
     @RequestMapping(value="/public/categories", method = RequestMethod.GET)
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories =  categoryservice.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories() {
+        CategoryResponse categoryResponse =  categoryservice.getAllCategories();
+        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
     //@PostMapping("/api/admin/category")
@@ -44,13 +45,9 @@ public class CategoryController {
     //@DeleteMapping("/api/admin/categories/{id}")
     @RequestMapping(value="/admin/categories/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
-        try {
-            String status = categoryservice.deleteCategory(id);
-            //return ResponseEntity.ok(status);
-            return new ResponseEntity<>(status, HttpStatus.OK);
-            //return ResponseEntity.status(HttpStatus.OK).body(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        String status = categoryservice.deleteCategory(id);
+        //return ResponseEntity.ok(status);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+        //return ResponseEntity.status(HttpStatus.OK).body(status);
     }
 }
