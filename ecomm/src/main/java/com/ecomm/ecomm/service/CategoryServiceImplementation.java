@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.ecomm.ecomm.payload.CategoryDTO;
 import com.ecomm.ecomm.payload.CategoryResponse;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,13 +45,14 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public void createCategory(Category category) {
-        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
-        if(savedCategory==null) {
+    public void createCategory(CategoryDTO categoryDTO) {
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        Category categoryFromDb = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(categoryFromDb == null) {
             categoryRepository.save(category);
         }
         else{
-            throw new APIException("Category with name "+category.getCategoryName()+" already exists!!!");
+            throw new APIException("Category with the name {"+category.getCategoryName()+"} already exists!!!");
         }
     }
 
@@ -73,9 +75,10 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Category category, Long id) {
+    public void updateCategory(CategoryDTO categoryDTO, Long id) {
         Optional<Category>optionalCategory= categoryRepository.findById(id);
         if(optionalCategory.isPresent()){
+            Category category = modelMapper.map(categoryDTO, Category.class);
             category.setId(id);
             categoryRepository.save(category);
         }
