@@ -8,10 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import com.ecomm.ecomm.model.Category;
-import org.springframework.web.server.ResponseStatusException;
-
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
@@ -24,8 +20,11 @@ public class CategoryController {
 
     //@GetMapping("/api/public/categories")
     @RequestMapping(value="/public/categories", method = RequestMethod.GET)
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoryResponse =  categoryservice.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name ="pageNumber")Integer pageNumber,
+            @RequestParam(name ="pageSize")Integer pageSize
+    ) {
+        CategoryResponse categoryResponse =  categoryservice.getAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 

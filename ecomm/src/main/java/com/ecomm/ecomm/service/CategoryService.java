@@ -4,7 +4,7 @@ import com.ecomm.ecomm.payload.CategoryDTO;
 import com.ecomm.ecomm.payload.CategoryResponse;
 
 public interface CategoryService {
-    CategoryResponse getAllCategories();
+    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize);
     void createCategory(CategoryDTO categoryDTO);
     String deleteCategory(Long id);
     void updateCategory(CategoryDTO categoryDTO, Long id);
