@@ -1,4 +1,16 @@
 package com.ecomm.ecomm.service;
 
+import com.ecomm.ecomm.payload.ProductDTO;
+import com.ecomm.ecomm.payload.ProductResponse;
+
 public interface ProductService {
+    void createProduct(ProductDTO productDTO, Long categoryId);
+
+    void updateProduct(ProductDTO productDTO, Long productId);
+
+    String deleteProduct(ProductDTO productDTO, Long productId);
+
+    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+
+    ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 }
