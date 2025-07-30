@@ -67,7 +67,9 @@ public class ProductServiceImplementation implements  ProductService{
         if(productRepository.existsById(id)){
             productRepository.deleteById(id);
         }
-        throw new ResourceNotFoundException("Product", "id", id);
+        else{
+            throw new ResourceNotFoundException("Product", "id", id);
+        }
     }
 
     @Override

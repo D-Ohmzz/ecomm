@@ -67,7 +67,9 @@ public class CategoryServiceImplementation implements CategoryService {
         if(categoryRepository.existsById(id)){
             categoryRepository.deleteById(id);
         }
-        throw new ResourceNotFoundException("Category","id",id);
+        else{
+            throw new ResourceNotFoundException("Category","id",id);
+        }
     }
 
     @Override
