@@ -45,13 +45,21 @@ public class ProductServiceImplementation implements  ProductService{
         else{
             throw new ResourceNotFoundException("Category", "categoryId", categoryId);
         }
-
-        
     }
 
     @Override
     public void updateProduct(ProductDTO productDTO, Long productId) {
-
+        if(productRepository.existsById(productId)){
+            Product product = modelMapper.map(productDTO, Product.class);
+            double specialPrice = productDTO.getPrice()*
+                    ((100 - productDTO.getDiscount())/100);
+            product.setSpecialPrice(specialPrice);
+            product.setId(productId);
+            productRepository.save(product);
+        }
+        else{
+            throw new ResourceNotFoundException("Product", "productId", productId);
+        }
     }
 
     @Override
