@@ -54,18 +54,16 @@ public class ProductController {
         return new ResponseEntity<>( "Product added successfully", HttpStatus.CREATED);
     }
 
-    @PutMapping("/admin/products/{productId}")
+    @PutMapping("/admin/products/{id}")
     public ResponseEntity<String> updateProduct(@RequestBody ProductDTO productDTO,
-                                                @PathVariable Long productId){
-        productService.updateProduct(productDTO, productId);
+                                                @PathVariable Long id){
+        productService.updateProduct(productDTO, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/admin/products/{productId}")
-    public ResponseEntity<String> deleteProduct(@RequestBody ProductDTO productDTO,
-                                                @PathVariable Long productId){
-        //status = productService.deleteProduct(productDTO, productId);
-        //return new ResponseEntity<>(status, HttpStatus.OK);
-        return new ResponseEntity<>("Created", HttpStatus.OK);
+    @DeleteMapping("/admin/products/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id){
+        String status = productService.deleteProduct(id);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

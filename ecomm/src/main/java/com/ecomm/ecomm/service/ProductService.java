@@ -6,9 +6,9 @@ import com.ecomm.ecomm.payload.ProductResponse;
 public interface ProductService {
     void createProduct(ProductDTO productDTO, Long categoryId);
 
-    void updateProduct(ProductDTO productDTO, Long productId);
+    void updateProduct(ProductDTO productDTO, Long id);
 
-    String deleteProduct(ProductDTO productDTO, Long productId);
+    String deleteProduct(Long id);
 
     ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 

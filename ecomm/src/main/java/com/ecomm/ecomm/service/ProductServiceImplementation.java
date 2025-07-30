@@ -48,23 +48,27 @@ public class ProductServiceImplementation implements  ProductService{
     }
 
     @Override
-    public void updateProduct(ProductDTO productDTO, Long productId) {
-        if(productRepository.existsById(productId)){
+    public void updateProduct(ProductDTO productDTO, Long id) {
+        if(productRepository.existsById(id)){
             Product product = modelMapper.map(productDTO, Product.class);
             double specialPrice = productDTO.getPrice()*
                     ((100 - productDTO.getDiscount())/100);
             product.setSpecialPrice(specialPrice);
-            product.setId(productId);
+            product.setId(id);
             productRepository.save(product);
         }
         else{
-            throw new ResourceNotFoundException("Product", "productId", productId);
+            throw new ResourceNotFoundException("Product", "productId", id);
         }
     }
 
     @Override
-    public String deleteProduct(ProductDTO productDTO, Long productId) {
-        return "Product deleted successfully";
+    public String deleteProduct(Long id) {
+        if(productRepository.existsById(id)){
+            productRepository.deleteById(id);
+            return "Product with id: " + id + " has been deleted successfully!";
+        }
+        throw new ResourceNotFoundException("Product", "productId", id);
     }
 
     @Override
