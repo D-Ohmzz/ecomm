@@ -63,10 +63,9 @@ public class ProductServiceImplementation implements  ProductService{
     }
 
     @Override
-    public String deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
         if(productRepository.existsById(id)){
             productRepository.deleteById(id);
-            return "Product with id: " + id + " has been deleted successfully!";
         }
         throw new ResourceNotFoundException("Product", "productId", id);
     }
@@ -126,7 +125,6 @@ public class ProductServiceImplementation implements  ProductService{
         else{
             throw new APIException("No products have been created for{"+category.getCategoryName()+"} category !!!");
         }
-
     }
 
     @Override
@@ -154,5 +152,4 @@ public class ProductServiceImplementation implements  ProductService{
             throw new ResourceNotFoundException("Product", "keyword", keyword);
         }
     }
-
 }

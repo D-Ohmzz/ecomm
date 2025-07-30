@@ -20,11 +20,6 @@ import com.ecomm.ecomm.repository.CategoryRepository;
 
 @Service
 public class CategoryServiceImplementation implements CategoryService {
-
-    //private List<Category> categories = new ArrayList<>();
-    //int intid;
-    //long id;
-
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -59,8 +54,7 @@ public class CategoryServiceImplementation implements CategoryService {
     @Override
     public void createCategory(CategoryDTO categoryDTO) {
         Category category = modelMapper.map(categoryDTO, Category.class);
-        Category categoryFromDb = categoryRepository.findByCategoryName(category.getCategoryName());
-        if(categoryFromDb == null) {
+        if(!(categoryRepository.existsByCategoryName(category.getCategoryName().trim()))) {
             categoryRepository.save(category);
         }
         else{
@@ -69,18 +63,9 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public String deleteCategory(Long id) {
-        /*List<Category> categories = categoryRepository.findAll();
-
-        Category category = categories.stream()
-        .filter(c->c.getId().equals(id))
-        .findFirst()
-        orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));*/
-
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if (optionalCategory.isPresent()) {
+    public void deleteCategory(Long id) {
+        if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
-            return " Category with id: " + id + " has been deleted successfully!";
         } else {
             throw new ResourceNotFoundException("Category","categoryId",id);
         }
@@ -88,25 +73,17 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public void updateCategory(CategoryDTO categoryDTO, Long id) {
-        Optional<Category>optionalCategory= categoryRepository.findById(id);
-        if(optionalCategory.isPresent()){
-            Category category = modelMapper.map(categoryDTO, Category.class);
-            category.setId(id);
-            categoryRepository.save(category);
-        }
-        else{
+        if (!(categoryRepository.existsById(id)))
+        {
             throw new ResourceNotFoundException("Category","categoryId",id);
         }
-
-        /*List<Category> categories = categoryRepository.findAll();
-          Category categoryFromDb = categories.stream()
-                .filter(c->c.getId().equals(id))
-                .findFirst()
-               .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
-
-               categoryRepository.save(category);*/
+        if(categoryRepository.existsByCategoryName(categoryDTO.getCategoryName().trim())){
+            throw new APIException("Category with the name {"+categoryDTO.getCategoryName()+"} already exists!!!");
+        }
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        category.setId(id);
+        categoryRepository.save(category);
     }
-
 }
 
 

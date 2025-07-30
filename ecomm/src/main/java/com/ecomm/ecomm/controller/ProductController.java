@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -51,11 +48,11 @@ public class ProductController {
     public ResponseEntity<String> createProduct(@RequestBody ProductDTO productDTO,
                                                 @PathVariable Long categoryId){
         productService.createProduct(productDTO, categoryId);
-        return new ResponseEntity<>( "Product added successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>( "Product added successfully!", HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/products/{id}")
-    public ResponseEntity<String> updateProduct(@RequestBody ProductDTO productDTO,
+    public ResponseEntity<Void> updateProduct(@RequestBody ProductDTO productDTO,
                                                 @PathVariable Long id){
         productService.updateProduct(productDTO, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -63,7 +60,7 @@ public class ProductController {
 
     @DeleteMapping("/admin/products/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id){
-        String status = productService.deleteProduct(id);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        productService.deleteProduct(id);
+        return new ResponseEntity<>("Product deleted successfully!", HttpStatus.OK);
     }
 }
