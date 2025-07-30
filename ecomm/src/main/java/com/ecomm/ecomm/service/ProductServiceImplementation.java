@@ -58,7 +58,7 @@ public class ProductServiceImplementation implements  ProductService{
             productRepository.save(product);
         }
         else{
-            throw new ResourceNotFoundException("Product", "productId", id);
+            throw new ResourceNotFoundException("Product", "id", id);
         }
     }
 
@@ -67,7 +67,7 @@ public class ProductServiceImplementation implements  ProductService{
         if(productRepository.existsById(id)){
             productRepository.deleteById(id);
         }
-        throw new ResourceNotFoundException("Product", "productId", id);
+        throw new ResourceNotFoundException("Product", "id", id);
     }
 
     @Override

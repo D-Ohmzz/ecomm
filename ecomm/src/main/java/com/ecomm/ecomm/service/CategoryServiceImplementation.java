@@ -64,18 +64,17 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
-        if (categoryRepository.existsById(id)) {
+        if(categoryRepository.existsById(id)){
             categoryRepository.deleteById(id);
-        } else {
-            throw new ResourceNotFoundException("Category","categoryId",id);
         }
+        throw new ResourceNotFoundException("Category","id",id);
     }
 
     @Override
     public void updateCategory(CategoryDTO categoryDTO, Long id) {
         if (!(categoryRepository.existsById(id)))
         {
-            throw new ResourceNotFoundException("Category","categoryId",id);
+            throw new ResourceNotFoundException("Category","id",id);
         }
         if(categoryRepository.existsByCategoryName(categoryDTO.getCategoryName().trim())){
             throw new APIException("Category with the name {"+categoryDTO.getCategoryName()+"} already exists!!!");
