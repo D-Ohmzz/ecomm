@@ -16,9 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImplementation implements  ProductService{
@@ -153,5 +159,47 @@ public class ProductServiceImplementation implements  ProductService{
         else{
             throw new ResourceNotFoundException("Product", "keyword", keyword);
         }
+    }
+
+    @Override
+    public void updateProductImage(Long id, MultipartFile image) throws IOException {
+        // Get the product from the DB
+       boolean productExists = productRepository.existsById(id);
+       if(productExists){
+           Product productFromDb = productRepository.getReferenceById(id);
+           // Upload image to server-/images directory
+           // Get the file name of the uploaded image
+           String path ="src/main/resources/static/images";
+           String fileName = uploadImage(path, image);
+           // Updating the file name to the product
+           productFromDb.setImage(fileName);
+           productRepository.save(productFromDb);
+       }else{
+           throw new ResourceNotFoundException("Product", "id", id);
+       }
+    }
+    private String uploadImage(String path, MultipartFile image) throws IOException {
+        // File names of current/original file
+        String originalFileName = image.getOriginalFilename();
+
+        // Generate a unique file name (UUID)
+        // image.jpg --> 123 --> 123.jpg
+        String randomId = UUID.randomUUID().toString();
+        String fileName = null;
+        if (originalFileName != null) {
+            fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
+        }
+        String filePath = path + File.pathSeparator + fileName;
+        //Check if path exists and create
+        File folder = new File(path);
+        if(!(folder.exists())){
+            folder.mkdir();
+        }
+        if (!folder.canWrite()) {
+            throw new IOException("No write permissions for: " + path);
+        }
+        // Upload to server
+        Files.copy(image.getInputStream(), Paths.get(filePath));
+        return fileName;
     }
 }
