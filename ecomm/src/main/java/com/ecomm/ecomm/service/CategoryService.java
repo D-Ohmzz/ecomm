@@ -1,11 +1,11 @@
 package com.ecomm.ecomm.service;
 
-import com.ecomm.ecomm.payload.CategoryDTO;
-import com.ecomm.ecomm.payload.CategoryResponse;
+import com.ecomm.ecomm.dto.request.CategoryRequestDTO;
+import com.ecomm.ecomm.dto.response.CategoryResponseDTO;
 
 public interface CategoryService {
-    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
-    void createCategory(CategoryDTO categoryDTO);
+    CategoryResponseDTO getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+    void createCategory(CategoryRequestDTO categoryRequestDTO);
     void deleteCategory(Long id);
-    void updateCategory(CategoryDTO categoryDTO, Long id);
+    void updateCategory(CategoryRequestDTO categoryRequestDTO, Long id);
 }

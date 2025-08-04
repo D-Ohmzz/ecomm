@@ -1,4 +1,4 @@
-package com.ecomm.ecomm.payload;
+package com.ecomm.ecomm.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class APIResponse {
     public String message;
     private boolean status;
-
 }

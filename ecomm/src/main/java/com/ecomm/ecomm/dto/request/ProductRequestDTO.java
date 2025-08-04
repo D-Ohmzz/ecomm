@@ -1,4 +1,4 @@
-package com.ecomm.ecomm.payload;
+package com.ecomm.ecomm.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO {
-    private Long id;
+public class ProductRequestDTO {
     private String productName;
     private String image;
     private String description;

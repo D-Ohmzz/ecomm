@@ -1,8 +1,8 @@
 package com.ecomm.ecomm.controller;
 
 import com.ecomm.ecomm.config.AppConstants;
-import com.ecomm.ecomm.payload.CategoryDTO;
-import com.ecomm.ecomm.payload.CategoryResponse;
+import com.ecomm.ecomm.dto.request.CategoryRequestDTO;
+import com.ecomm.ecomm.dto.response.CategoryResponseDTO;
 import com.ecomm.ecomm.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,25 +19,25 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories(
+    public ResponseEntity<CategoryResponseDTO> getAllCategories(
             @RequestParam(name ="pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false)Integer pageNumber,
             @RequestParam(name ="pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false)Integer pageSize,
             @RequestParam(name ="sortBy", defaultValue = AppConstants.CATEGORIES_SORT_BY, required = false)String sortBy,
             @RequestParam(name ="sortOrder", defaultValue = AppConstants.CATEGORIES_SORT_ORDER, required = false)String sortOrder
     ) {
-        CategoryResponse categoryResponse =  categoryservice.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
-        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+        CategoryResponseDTO categoryResponseDTO =  categoryservice.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
+        return new ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        categoryservice.createCategory(categoryDTO);
+    public ResponseEntity<String> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+        categoryservice.createCategory(categoryRequestDTO);
         return new ResponseEntity<>( "Category added successfully!", HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/categories/{id}")
-    public ResponseEntity<Void>updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long id){
-        categoryservice.updateCategory(categoryDTO, id);
+    public ResponseEntity<Void>updateCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO, @PathVariable Long id){
+        categoryservice.updateCategory(categoryRequestDTO, id);
         return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     }
 

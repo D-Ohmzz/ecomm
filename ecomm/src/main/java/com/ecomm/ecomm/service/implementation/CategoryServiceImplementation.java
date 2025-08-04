@@ -2,10 +2,10 @@ package com.ecomm.ecomm.service.implementation;
 
 import java.util.List;
 
-import com.ecomm.ecomm.payload.CategoryDTO;
-import com.ecomm.ecomm.payload.CategoryResponse;
+import com.ecomm.ecomm.dto.mapper.CategoryMapper;
+import com.ecomm.ecomm.dto.request.CategoryRequestDTO;
+import com.ecomm.ecomm.dto.response.CategoryResponseDTO;
 import com.ecomm.ecomm.service.CategoryService;
-import org.modelmapper.ModelMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +21,13 @@ import com.ecomm.ecomm.repository.CategoryRepository;
 @Service
 public class CategoryServiceImplementation implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final ModelMapper modelMapper;
-    public CategoryServiceImplementation(CategoryRepository categoryRepository, ModelMapper modelMapper){
+    private final CategoryMapper categoryMapper;
+    public CategoryServiceImplementation(CategoryRepository categoryRepository, CategoryMapper categoryMapper){
         this.categoryRepository=categoryRepository;
-        this.modelMapper=modelMapper;
+        this.categoryMapper=categoryMapper;
     }
     @Override
-    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public CategoryResponseDTO getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 :Sort.by(sortBy).descending();
@@ -35,16 +35,9 @@ public class CategoryServiceImplementation implements CategoryService {
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
         List <Category> categories = categoryPage.getContent();
         if(!(categories.isEmpty())){
-            List<CategoryDTO> categoryDTOS = categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class))
+            List<Category> categoryEntities = categories.stream()
                     .toList();
-            CategoryResponse categoryResponse = new CategoryResponse();
-            categoryResponse.setContent(categoryDTOS);
-            categoryResponse.setPageNumber(categoryPage.getNumber());
-            categoryResponse.setPageSize(categoryPage.getSize());
-            categoryResponse.setTotalElements(categoryPage.getTotalElements());
-            categoryResponse.setTotalPages(categoryPage.getTotalPages());
-            categoryResponse.setLastPage(categoryPage.isLast());
-            return categoryResponse;
+            return categoryMapper.convertToCategoryResponseDTO(categoryEntities, categoryPage);
         }
         else{
             throw new APIException("No Categories have been created !!!");
@@ -52,8 +45,8 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public void createCategory(CategoryDTO categoryDTO) {
-        Category category = modelMapper.map(categoryDTO, Category.class);
+    public void createCategory(CategoryRequestDTO categoryRequestDTO) {
+        Category category = categoryMapper.convertToCategoryEntity(categoryRequestDTO);
         if(!(categoryRepository.existsByCategoryName(category.getCategoryName().trim()))) {
             categoryRepository.save(category);
         }
@@ -73,15 +66,15 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public void updateCategory(CategoryDTO categoryDTO, Long id) {
+    public void updateCategory(CategoryRequestDTO categoryRequestDTO, Long id) {
         if (!(categoryRepository.existsById(id)))
         {
             throw new ResourceNotFoundException("Category","id",id);
         }
-        if(categoryRepository.existsByCategoryName(categoryDTO.getCategoryName().trim())){
-            throw new APIException("Category with the name {"+categoryDTO.getCategoryName()+"} already exists!!!");
+        if(categoryRepository.existsByCategoryName(categoryRequestDTO.getCategoryName().trim())){
+            throw new APIException("Category with the name {"+ categoryRequestDTO.getCategoryName()+"} already exists!!!");
         }
-        Category category = modelMapper.map(categoryDTO, Category.class);
+        Category category = categoryMapper.convertToCategoryEntity(categoryRequestDTO);
         category.setId(id);
         categoryRepository.save(category);
     }
