@@ -23,9 +23,9 @@ public class ProductMapper {
     }
     public Product convertToProductEntity(ProductRequestDTO productRequestDTO){
         Product product = new Product();
-        product.setProductName(productRequestDTO.getProductName());
+        product.setProductName(productRequestDTO.getProductName().trim());
         product.setImage(productRequestDTO.getImage());
-        product.setDescription(productRequestDTO.getDescription());
+        product.setDescription(productRequestDTO.getDescription().trim());
         product.setQuantity(productRequestDTO.getQuantity());
         product.setPrice(productRequestDTO.getPrice());
         product.setDiscount(productRequestDTO.getDiscount());
@@ -34,9 +34,9 @@ public class ProductMapper {
     }
     public Product convertToProductEntity(ProductUpdateRequestDTO productUpdateRequestDTO){
         Product product = new Product();
-        product.setProductName(productUpdateRequestDTO.getProductName());
+        product.setProductName(productUpdateRequestDTO.getProductName().trim());
         product.setImage(productUpdateRequestDTO.getImage());
-        product.setDescription(productUpdateRequestDTO.getDescription());
+        product.setDescription(productUpdateRequestDTO.getDescription().trim());
         product.setQuantity(productUpdateRequestDTO.getQuantity());
         product.setPrice(productUpdateRequestDTO.getPrice());
         product.setDiscount(productUpdateRequestDTO.getDiscount());

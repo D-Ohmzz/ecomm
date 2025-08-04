@@ -22,7 +22,7 @@ public class CategoryMapper {
     }
     public Category convertToCategoryEntity(CategoryRequestDTO categoryRequestDTO){
         Category category = new Category();
-        category.setCategoryName(categoryRequestDTO.getCategoryName());
+        category.setCategoryName(categoryRequestDTO.getCategoryName().trim());
         return category;
     }
 }
