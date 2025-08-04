@@ -1,12 +1,12 @@
-package com.ecomm.ecomm.service;
+package com.ecomm.ecomm.service.implementation;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ecomm.ecomm.payload.CategoryDTO;
 import com.ecomm.ecomm.payload.CategoryResponse;
+import com.ecomm.ecomm.service.CategoryService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +20,12 @@ import com.ecomm.ecomm.repository.CategoryRepository;
 
 @Service
 public class CategoryServiceImplementation implements CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
+    private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    public CategoryServiceImplementation(CategoryRepository categoryRepository, ModelMapper modelMapper){
+        this.categoryRepository=categoryRepository;
+        this.modelMapper=modelMapper;
+    }
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
