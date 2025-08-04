@@ -47,7 +47,7 @@ public class CategoryServiceImplementation implements CategoryService {
     @Override
     public void createCategory(CategoryRequestDTO categoryRequestDTO) {
         Category category = categoryMapper.convertToCategoryEntity(categoryRequestDTO);
-        if(!(categoryRepository.existsByCategoryName(category.getCategoryName().trim()))) {
+        if(!(categoryRepository.existsByCategoryName(category.getCategoryName()))) {
             categoryRepository.save(category);
         }
         else{
@@ -71,7 +71,7 @@ public class CategoryServiceImplementation implements CategoryService {
         {
             throw new ResourceNotFoundException("Category","id",id);
         }
-        if(categoryRepository.existsByCategoryName(categoryRequestDTO.getCategoryName().trim())){
+        if(categoryRepository.existsByCategoryName(categoryRequestDTO.getCategoryName())){
             throw new APIException("Category with the name {"+ categoryRequestDTO.getCategoryName()+"} already exists!!!");
         }
         Category category = categoryMapper.convertToCategoryEntity(categoryRequestDTO);
