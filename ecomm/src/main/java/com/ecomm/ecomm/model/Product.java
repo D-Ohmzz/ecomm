@@ -22,6 +22,10 @@ public class Product {
     private Double specialPrice;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "category_Id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_Id")
+    private User user;
 }
