@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity(name="products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="products")
+@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
