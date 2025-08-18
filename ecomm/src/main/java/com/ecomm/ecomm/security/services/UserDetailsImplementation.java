@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Data
-public class UserDetailsServiceImplementation implements UserDetails {
+public class UserDetailsImplementation implements UserDetails {
     private static final long serialVersionUID = 1L;
     private long id;
     private String username;
@@ -24,7 +24,7 @@ public class UserDetailsServiceImplementation implements UserDetails {
     @JsonIgnore
     private String password;
 
-    public UserDetailsServiceImplementation(long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImplementation(long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -32,11 +32,11 @@ public class UserDetailsServiceImplementation implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsServiceImplementation build(User user){
+    public static UserDetailsImplementation build(User user){
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
-        return new UserDetailsServiceImplementation(
+        return new UserDetailsImplementation(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
@@ -87,7 +87,7 @@ public class UserDetailsServiceImplementation implements UserDetails {
         if(o == null || getClass() != o.getClass()){
             return false;
         }
-        UserDetailsServiceImplementation user = (UserDetailsServiceImplementation) o;
+        UserDetailsImplementation user = (UserDetailsImplementation) o;
         return Objects.equals(id, user.id);
     }
 }
