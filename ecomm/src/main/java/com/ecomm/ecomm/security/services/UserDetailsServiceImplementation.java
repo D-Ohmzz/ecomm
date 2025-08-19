@@ -1,6 +1,7 @@
 package com.ecomm.ecomm.security.services;
 
 import com.ecomm.ecomm.model.User;
+import com.ecomm.ecomm.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImplementation implements UserDetailsService {
-    private static final UserRepository userRepository;
+    private final UserRepository userRepository;
     public UserDetailsServiceImplementation(UserRepository userRepository){
         this.userRepository=userRepository;
     }
