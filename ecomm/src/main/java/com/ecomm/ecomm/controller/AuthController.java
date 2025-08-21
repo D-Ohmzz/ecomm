@@ -22,9 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
@@ -76,18 +80,14 @@ public class AuthController {
         );
         Set<String> strRoles  = signupRequestDTO.roles();
         Set<Role> roles = new HashSet<>();
-        if(!userRepository.existsByUsername(signupRequestDTO.username())){
-
-        }
-        else{
+        if(userRepository.existsByUsername(signupRequestDTO.username())){
             throw new APIException("The submitted username {"+ signupRequestDTO.username()+"} has been taken please create a new one!!!");
         }
-        if(!userRepository.existsByEmail(signupRequestDTO.email())){
 
+        if(userRepository.existsByEmail(signupRequestDTO.email())){
+            throw new APIException("The provide email email {"+ signupRequestDTO.username()+"} already exists!!!");
         }
-        else{
-            throw new APIException("THe provide email email {"+ signupRequestDTO.username()+"} already exists!!!");
-        }
+
         if(strRoles == null){
             //when user did not send a role, assign a default role
             Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
