@@ -36,8 +36,7 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 50)
-    @Email
+    @Size(max = 100)
     private String password;
 
     public User(String username, String email, String password){
