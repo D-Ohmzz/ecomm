@@ -7,11 +7,11 @@ import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.model.AppRole;
 import com.ecomm.ecomm.model.Role;
 import com.ecomm.ecomm.model.User;
+import com.ecomm.ecomm.repository.RoleRepository;
 import com.ecomm.ecomm.repository.UserRepository;
 import com.ecomm.ecomm.security.jwt.JwtUtils;
 import com.ecomm.ecomm.security.services.UserDetailsImplementation;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +30,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository;
+    private final RoleRepository roleRepository;
     public AuthController(JwtUtils jwtUtils, AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository){
         this.jwtUtils=jwtUtils;
         this.authenticationManager=authenticationManager;
