@@ -19,23 +19,23 @@ public class ProductRequestDTO {
     @Size(max = 255, message = "Description cannot exceed 255 characters!!!")
     private String description;
 
-    @NotBlank(message = "Amount cannot be null!!!")
-    @Positive(message = "Amount must be positive!!!")
+    @NotNull(message = "Quantity cannot be null!!!")
+    @Positive(message = "Quantity must be positive!!!")
     @Digits(integer = 10, fraction = 0, message = "Quantity must be a whole number with upto 10 integers!!")
     private Integer quantity;
 
-    @NotBlank(message = "Price cannot be null!!!")
+    @NotNull(message = "Price cannot be null!!!")
     @Positive(message = "Price must be positive!!!")
     @Digits(integer = 10, fraction = 2, message = "Price must be a whole number with upto 10 integers and 2 decimal places!!!")
     private double price;
 
-    @NotBlank(message = "Discount cannot be null!!!")
-    @Positive(message = "Price must be positive!!!")
+    @NotNull(message = "Discount cannot be null!!!")
+    @Positive(message = "Discount must be positive!!!")
     @Digits(integer = 10, fraction = 2, message = "Discount must be a whole number with upto 10 integers and 2 decimal places!!!")
     private double discount;
 
-    @NotBlank(message = "Discount cannot be null!!!")
-    @Positive(message = "Price must be positive!!!")
+    @NotNull(message = "Special price cannot be null!!!")
+    @Positive(message = "Special price must be positive!!!")
     @Digits(integer = 10, fraction = 2, message = "Special price must be a whole number with upto 10 integers and 2 decimal places!!!")
     private double specialPrice;
 }
