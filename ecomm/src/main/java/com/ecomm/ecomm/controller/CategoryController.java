@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
@@ -30,20 +33,29 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    public ResponseEntity<Object> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         categoryservice.createCategory(categoryRequestDTO);
-        return new ResponseEntity<>( "Category added successfully!", HttpStatus.CREATED);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Category added successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>( map, HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/categories/{id}")
-    public ResponseEntity<Void>updateCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO, @PathVariable Long id){
+    public ResponseEntity<Object>updateCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO, @PathVariable Long id){
         categoryservice.updateCategory(categoryRequestDTO, id);
-        return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Category updated successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/categories/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteCategory(@PathVariable Long id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Category deleted successfully!!!");
+        map.put("status", "true");
         categoryservice.deleteCategory(id);
-        return new ResponseEntity<>("Category deleted successfully", HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

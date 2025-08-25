@@ -58,7 +58,7 @@ public class AuthController {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad Credentials");
             map.put("status", "false");
-            return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
         }
         UserDetailsImplementation userDetails = (UserDetailsImplementation) authentication.getPrincipal();
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -72,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequestDTO signupRequestDTO){
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequestDTO signupRequestDTO){
         User user = new User(
                 signupRequestDTO.username(),
                 signupRequestDTO.email(),
@@ -117,8 +117,9 @@ public class AuthController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-        return new ResponseEntity<>(" User registered successfully!!!", HttpStatus.CREATED);
-
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "User registered successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.CREATED);
     }
 }

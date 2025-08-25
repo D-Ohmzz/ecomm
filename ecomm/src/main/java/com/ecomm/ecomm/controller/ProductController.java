@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -49,29 +51,41 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products/categories/{categoryId}/product")
-    public ResponseEntity<String> createProduct(@RequestBody ProductRequestDTO productRequestDTO,
+    public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO,
                                                 @PathVariable Long categoryId){
         productService.createProduct(productRequestDTO, categoryId);
-        return new ResponseEntity<>( "Product added successfully!", HttpStatus.CREATED);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Product added successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>( map, HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/products/{id}")
-    public ResponseEntity<Void> updateProduct(@RequestBody ProductUpdateRequestDTO productUpdateRequestDTO,
+    public ResponseEntity<Object> updateProduct(@RequestBody ProductUpdateRequestDTO productUpdateRequestDTO,
                                                 @PathVariable Long id){
         productService.updateProduct(productUpdateRequestDTO, id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Product updated successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/products/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<Object> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
-        return new ResponseEntity<>("Product deleted successfully!", HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Product deleted successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PutMapping("/admin/products/{id}/images")
-    public ResponseEntity<String> updateProductImage(@PathVariable Long id,
+    public ResponseEntity<Object> updateProductImage(@PathVariable Long id,
                                                    @RequestParam("image")MultipartFile image) throws IOException {
         productService.updateProductImage(id, image);
-        return new ResponseEntity<>("Image updated successfully!", HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Image updated successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
