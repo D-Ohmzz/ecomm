@@ -2,7 +2,8 @@ package com.ecomm.ecomm.controller;
 
 import com.ecomm.ecomm.dto.request.SigninRequestDTO;
 import com.ecomm.ecomm.dto.request.SignupRequestDTO;
-import com.ecomm.ecomm.dto.response.UserInfoResponseDTO;
+import com.ecomm.ecomm.dto.response.UserInfoJwtCookieResponseDTO;
+import com.ecomm.ecomm.dto.response.UserInfoJwtTokenResponseDTO;
 import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.model.AppRole;
 import com.ecomm.ecomm.model.Role;
@@ -12,7 +13,9 @@ import com.ecomm.ecomm.repository.UserRepository;
 import com.ecomm.ecomm.security.jwt.JwtUtils;
 import com.ecomm.ecomm.security.services.UserDetailsImplementation;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,13 +65,20 @@ public class AuthController {
         }
         UserDetailsImplementation userDetails = (UserDetailsImplementation) authentication.getPrincipal();
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+        //String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .toList();
 
-        UserInfoResponseDTO userInfoResponseDTO = new UserInfoResponseDTO(userDetails.getId(), userDetails.getUsername(), roles, jwtToken);
-        return new ResponseEntity<>(userInfoResponseDTO, HttpStatus.OK);
+        //UserInfoJwtTokenResponseDTO userInfoJwtTokenResponseDTO = new UserInfoJwtTokenResponseDTO(userDetails.getId(),
+        //        userDetails.getUsername(), roles, jwtToken);
+        UserInfoJwtCookieResponseDTO userInfoJwtCookieResponseDTO = new UserInfoJwtCookieResponseDTO(userDetails.getId(),
+                userDetails.getUsername(), roles);
+        //return new ResponseEntity<>(userInfoJwtTokenResponseDTO, HttpStatus.OK);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+                jwtCookie.toString())
+                .body(userInfoJwtCookieResponseDTO);
     }
 
     @PostMapping("/signup")
