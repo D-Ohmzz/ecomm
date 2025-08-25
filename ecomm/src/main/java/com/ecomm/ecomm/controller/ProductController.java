@@ -5,6 +5,7 @@ import com.ecomm.ecomm.dto.request.ProductRequestDTO;
 import com.ecomm.ecomm.dto.request.ProductUpdateRequestDTO;
 import com.ecomm.ecomm.dto.response.ProductResponseDTO;
 import com.ecomm.ecomm.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products/categories/{categoryId}/product")
-    public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO,
+    public ResponseEntity<Object> createProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO,
                                                 @PathVariable Long categoryId){
         productService.createProduct(productRequestDTO, categoryId);
         Map<String, Object> map = new HashMap<>();
@@ -61,7 +62,7 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{id}")
-    public ResponseEntity<Object> updateProduct(@RequestBody ProductUpdateRequestDTO productUpdateRequestDTO,
+    public ResponseEntity<Object> updateProduct(@Valid @RequestBody ProductUpdateRequestDTO productUpdateRequestDTO,
                                                 @PathVariable Long id){
         productService.updateProduct(productUpdateRequestDTO, id);
         Map<String, Object> map = new HashMap<>();
@@ -80,7 +81,7 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{id}/images")
-    public ResponseEntity<Object> updateProductImage(@PathVariable Long id,
+    public ResponseEntity<Object> updateProductImage(@Valid @PathVariable Long id,
                                                    @RequestParam("image")MultipartFile image) throws IOException {
         productService.updateProductImage(id, image);
         Map<String, Object> map = new HashMap<>();
