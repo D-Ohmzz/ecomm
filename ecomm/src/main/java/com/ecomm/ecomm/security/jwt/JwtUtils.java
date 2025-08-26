@@ -27,7 +27,7 @@ public class JwtUtils {
     private int jwtExpirationMs;
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
-    @Value("${spring.app.jwtCookie}")
+    @Value("${spring.app.jwtCookieName}")
     private String jwtCookie;
     /**Getting JWT from header
      String getJWTFromHeader(HttpServletRequest request){
