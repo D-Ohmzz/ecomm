@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
             String fieldName=((FieldError)err).getField();
             String message = err.getDefaultMessage();
             response.put(fieldName, message);
+            response.put("status", "false");
         });
         return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
 
