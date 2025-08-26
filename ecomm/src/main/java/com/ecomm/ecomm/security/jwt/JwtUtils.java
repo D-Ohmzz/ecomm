@@ -102,4 +102,11 @@ public class JwtUtils {
         }
         return false;
     }
+    //Utility method for sign out. The null cookie overrrides the previous cookie and logs out teh user
+    public ResponseCookie generateCleanJwtCookie(){
+        ResponseCookie responseCookie = ResponseCookie.from(jwtCookie, null)
+                .path("/api")//limits cookie access to /api routes only
+                .build();
+        return responseCookie;
+    }
 }
