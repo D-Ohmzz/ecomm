@@ -4,6 +4,7 @@ import com.ecomm.ecomm.dto.request.SigninRequestDTO;
 import com.ecomm.ecomm.dto.request.SignupRequestDTO;
 import com.ecomm.ecomm.dto.response.UserInfoJwtCookieResponseDTO;
 import com.ecomm.ecomm.dto.response.UserInfoJwtTokenResponseDTO;
+import com.ecomm.ecomm.dto.response.UserInfoResponseDTO;
 import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.model.AppRole;
 import com.ecomm.ecomm.model.Role;
@@ -21,12 +22,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -68,13 +67,13 @@ public class AuthController {
         //String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        //UserInfoJwtTokenResponseDTO userInfoJwtTokenResponseDTO = new UserInfoJwtTokenResponseDTO(userDetails.getId(),
+        // UserInfoJwtTokenResponseDTO userInfoJwtTokenResponseDTO = new UserInfoJwtTokenResponseDTO(userDetails.getId(),
         //        userDetails.getUsername(), roles, jwtToken);
         UserInfoJwtCookieResponseDTO userInfoJwtCookieResponseDTO = new UserInfoJwtCookieResponseDTO(userDetails.getId(),
-                userDetails.getUsername(), roles);
+                userDetails.getUsername(), roles, jwtCookie.toString());
         //return new ResponseEntity<>(userInfoJwtTokenResponseDTO, HttpStatus.OK);
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                 jwtCookie.toString())
@@ -131,5 +130,26 @@ public class AuthController {
         map.put("message", "User registered successfully!!!");
         map.put("status", "true");
         return new ResponseEntity<>(map, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/username")
+    public String getUsernameOfSignedInUser(Authentication authentication){
+        if(authentication != null ){
+            return authentication.getName();
+        }else{
+            return "";
+        }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<Object> getUserDetailsOfSignedInUser(Authentication authentication){
+        UserDetailsImplementation userDetails = (UserDetailsImplementation) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        UserInfoResponseDTO userInfoResponseDTO = new UserInfoResponseDTO(userDetails.getId(),
+                userDetails.getUsername(), roles);
+        return ResponseEntity.ok()
+                .body(userInfoResponseDTO);
     }
 }
