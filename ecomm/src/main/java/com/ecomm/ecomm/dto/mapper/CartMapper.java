@@ -10,6 +10,6 @@ import java.util.List;
 @Component
 public class CartMapper {
     public CartResponseDTO convertToCartResponseDTO(Cart cart, List<ProductCartResponseDTO> productCartResponseDTOs){
-        CartResponseDTO cartResponseDTO = new CartResponseDTO(cart.getId(), cart.getTotalPrice(), productCartResponseDTOs );
+        return new CartResponseDTO(cart.getId(), cart.getTotalPrice(), productCartResponseDTOs);
     }
 }
