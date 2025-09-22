@@ -75,7 +75,7 @@ public class CartServiceImplementation implements CartService {
         // N/B:- We will only reduce the quantity of products after an order is placed
 
         // Updating cart total price
-        cart.setTotalPrice(cart.getTotalPrice() + (product.getQuantity() * product.getSpecialPrice()));
+        cart.setTotalPrice(cart.getTotalPrice() + (quantity * product.getSpecialPrice()));
 
         // Save Cart
         cartRepository.save(cart);
