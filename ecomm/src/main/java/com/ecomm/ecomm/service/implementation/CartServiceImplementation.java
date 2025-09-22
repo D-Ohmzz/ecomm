@@ -4,7 +4,6 @@ import com.ecomm.ecomm.dto.mapper.CartMapper;
 import com.ecomm.ecomm.dto.mapper.ProductMapper;
 import com.ecomm.ecomm.dto.response.CartResponseDTO;
 import com.ecomm.ecomm.dto.response.ProductCartResponseDTO;
-import com.ecomm.ecomm.dto.response.ProductResponseDTO;
 import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.exceptions.ResourceNotFoundException;
 import com.ecomm.ecomm.model.Cart;
@@ -14,6 +13,7 @@ import com.ecomm.ecomm.repository.CartItemRepository;
 import com.ecomm.ecomm.repository.CartRepository;
 import com.ecomm.ecomm.repository.ProductRepository;
 import com.ecomm.ecomm.service.CartService;
+import com.ecomm.ecomm.util.AuthUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public class CartServiceImplementation implements CartService {
         }
         Cart cart  =  new Cart();
         cart.setTotalPrice(0.00);
-        cart.setUser(authUtil.loggedInUser);
+        cart.setUser(authUtil.loggedInUser());
         return cartRepository.save(cart);
     }
 }
