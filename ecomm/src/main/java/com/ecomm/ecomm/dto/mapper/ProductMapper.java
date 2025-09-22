@@ -2,6 +2,7 @@ package com.ecomm.ecomm.dto.mapper;
 
 import com.ecomm.ecomm.dto.request.ProductRequestDTO;
 import com.ecomm.ecomm.dto.request.ProductUpdateRequestDTO;
+import com.ecomm.ecomm.dto.response.ProductCartResponseDTO;
 import com.ecomm.ecomm.dto.response.ProductResponseDTO;
 import com.ecomm.ecomm.model.Product;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,19 @@ public class ProductMapper {
         productResponseDTO.setLastPage(productPage.isLast());
         return productResponseDTO;
     }
+    public ProductCartResponseDTO convertToProductCartResponseDTO(Product product){
+        return new ProductCartResponseDTO(
+                product.getId(),
+                product.getProductName(),
+                product.getImage(),
+                product.getDescription(),
+                product.getQuantity(),
+                product.getPrice(),
+                product.getDiscount(),
+                product.getSpecialPrice()
+        );
+    }
+
     public Product convertToProductEntity(ProductRequestDTO productRequestDTO){
         Product product = new Product();
         product.setProductName(productRequestDTO.getProductName().trim());
