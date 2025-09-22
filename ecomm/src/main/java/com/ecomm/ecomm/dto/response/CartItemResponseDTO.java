@@ -1,10 +1,12 @@
 package com.ecomm.ecomm.dto.response;
 
-public class CartItemResponseDTO {
-    private Long id;
-    private CartResponseDTO cartDTO;
-    private ProductResponseDTO productResponseDTO;
-    private Integer quantity;
-    private Double discount;
-    private Double productPrice;
-}
+import java.util.List;
+
+public record CartItemResponseDTO (
+        Long id,
+        List<CartResponseDTO> carts,
+        List<ProductCartResponseDTO> products,
+        Integer quantity,
+        Double discount,
+        Double productPrice
+){}
