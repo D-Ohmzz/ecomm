@@ -3,7 +3,7 @@ package com.ecomm.ecomm.dto.response;
 import java.util.List;
 
 public record CartItemResponseDTO (
-        Long id,
+        Long cartItemId,
         List<CartResponseDTO> carts,
         List<ProductCartResponseDTO> products,
         Integer quantity,

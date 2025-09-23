@@ -1,7 +1,7 @@
 package com.ecomm.ecomm.dto.response;
 
 public record ProductCartResponseDTO(
-        Long id,
+        Long productId,
         String productName,
         String image,
         String description,
