@@ -17,6 +17,7 @@ import com.ecomm.ecomm.util.AuthUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -92,6 +93,23 @@ public class CartServiceImplementation implements CartService {
 
         // Return Updated Cart
         return cartMapper.convertToCartResponseDTO(cart, productCartResponseDTOStream.toList());
+    }
+
+    @Override
+    public List<CartResponseDTO> getAllCarts() {
+        List<Cart> carts = cartRepository.findAll();
+        if(!(carts.isEmpty())){
+            return carts.stream()
+                    .map(cart -> {
+                        List<ProductCartResponseDTO> products = cart.getCartItems().stream()
+                                .map(item -> productMapper.convertToProductCartResponseDTO(item.getProduct()))
+                                .collect(Collectors.toList());
+                         return cartMapper.convertToCartResponseDTO(cart, products);
+                    }).collect(Collectors.toList());
+        }
+        else{
+            throw new APIException("No carts have been created !!!");
+        }
     }
 
     //Function that checks if the user has a cart and if not creates one
