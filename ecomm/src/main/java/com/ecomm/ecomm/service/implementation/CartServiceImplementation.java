@@ -112,6 +112,21 @@ public class CartServiceImplementation implements CartService {
         }
     }
 
+    @Override
+    public CartResponseDTO getCart(String email, Long cartId) {
+        Cart cart = cartRepository.findCartByEmailAndCartId(email, cartId);
+        if(cart != null){
+            cart.getCartItems().forEach(c ->c.getProduct().setQuantity(c.getQuantity()));
+            List<ProductCartResponseDTO> products = cart.getCartItems().stream()
+                    .map(item -> productMapper.convertToProductCartResponseDTO(item.getProduct()))
+                    .collect(Collectors.toList());
+            return cartMapper.convertToCartResponseDTO(cart, products);
+        }
+        else{
+            throw new APIException("No carts found associated with the user !!!");
+        }
+    }
+
     //Function that checks if the user has a cart and if not creates one
     public Cart createCart(){
         Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
