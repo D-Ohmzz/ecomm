@@ -14,6 +14,7 @@ import com.ecomm.ecomm.repository.CartRepository;
 import com.ecomm.ecomm.repository.ProductRepository;
 import com.ecomm.ecomm.service.CartService;
 import com.ecomm.ecomm.util.AuthUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -125,6 +126,68 @@ public class CartServiceImplementation implements CartService {
         else{
             throw new APIException("No carts found associated with the user !!!");
         }
+    }
+
+    @Override
+    @Transactional
+    public CartResponseDTO updateProductQuantityInCart(Long productId, Integer quantity) {
+        // Validations
+
+        // 1. Check if cart exists
+        String email =  authUtil.loggedInEmail();
+        Cart userCart =  cartRepository.findCartByEmail(email);
+        Long cartId = userCart.getId();
+        if(!cartRepository.existsById(cartId)){
+            throw new ResourceNotFoundException("Cart", "id", cartId);
+        }
+
+        // 2. Check if productId exists in db
+        if(!productRepository.existsById(productId)){
+            throw new ResourceNotFoundException("Product", "id", productId);
+        }
+        Product product = productRepository.getReferenceById(productId);
+
+        // 3. Check if the product is in stock
+        if(product.getQuantity() == 0){
+            throw new APIException(product.getProductName()+" is out of stock!!!");
+        }
+
+        // 4. Check if the quantity requested is greater than the available stock
+        if(product.getQuantity() < quantity){
+            throw new APIException("Sorry only "+product.getQuantity()+" items are available for purchase!!!");
+        }
+
+        // Check if the productId exists in the cart
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
+        if(cartItem == null){
+            throw new APIException("Product: "+product.getProductName()+" is not available in the cart !!!");
+        }
+
+        // Updating the cart item
+        cartItem.setProductPrice(product.getSpecialPrice());
+        cartItem.setQuantity(cartItem.getQuantity()+quantity);
+        cartItem.setDiscount(product.getDiscount());
+        userCart.setTotalPrice(userCart.getTotalPrice() + (cartItem.getProductPrice() * quantity));
+        cartRepository.save(userCart);
+
+        CartItem updatedCartItem = cartItemRepository.save(cartItem);
+
+        // Delete the updated item if it's quantity is eqaul to 0
+        if(updatedCartItem.getQuantity()==0){
+            cartItemRepository.deleteById(updatedCartItem.getId());
+        }
+
+        //Looping through every cart item in the stream and updating its quantity with the quantity that was in the cart
+        userCart.getCartItems().forEach(c ->c.getProduct().setQuantity(c.getQuantity()));
+        List<ProductCartResponseDTO> products = userCart.getCartItems().stream()
+                .map(item -> productMapper.convertToProductCartResponseDTO(item.getProduct()))
+                .toList();
+
+        CartResponseDTO cartResponseDTO = cartMapper.convertToCartResponseDTO(userCart, products);
+        return null;
+
+
+
     }
 
     //Function that checks if the user has a cart and if not creates one
