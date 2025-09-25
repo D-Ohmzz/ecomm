@@ -163,13 +163,24 @@ public class CartServiceImplementation implements CartService {
             throw new APIException("Product: "+product.getProductName()+" is not available in the cart !!!");
         }
 
-        // Updating the cart item
-        cartItem.setProductPrice(product.getSpecialPrice());
-        cartItem.setQuantity(cartItem.getQuantity()+quantity);
-        cartItem.setDiscount(product.getDiscount());
-        userCart.setTotalPrice(userCart.getTotalPrice() + (cartItem.getProductPrice() * quantity));
-        cartRepository.save(userCart);
+        int newQuantity = cartItem.getQuantity()+quantity;
 
+        //validation to prevent negative quantities
+        if(newQuantity<0){
+            throw new APIException("The resulting quantity cannot be negative");
+        }
+
+        //check to automatically delete product from cart if it's quantity is equal to 0
+        if(newQuantity == 0){
+            deleteProductFromCart(cartId, productId);
+        }else{
+            // Updating the cart item
+            cartItem.setProductPrice(product.getSpecialPrice());
+            cartItem.setQuantity(newQuantity);
+            cartItem.setDiscount(product.getDiscount());
+            userCart.setTotalPrice(userCart.getTotalPrice() + (cartItem.getProductPrice() * quantity));
+            cartRepository.save(userCart);
+        }
         CartItem updatedCartItem = cartItemRepository.save(cartItem);
 
         // Delete the updated item if it's quantity is eqaul to 0
@@ -185,9 +196,23 @@ public class CartServiceImplementation implements CartService {
 
         CartResponseDTO cartResponseDTO = cartMapper.convertToCartResponseDTO(userCart, products);
         return null;
+    }
 
+    @Override
+    @Transactional
+    public void deleteProductFromCart(Long cartId, Long productId) {
+        if(!cartRepository.existsById(cartId)){
+            throw new ResourceNotFoundException("Cart", "id", cartId);
+        }
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
+        if(cartItem == null){
+            throw new ResourceNotFoundException("Product", "id", productId);
+        }
+        // Update the total price before deleting
+        Cart cart = cartRepository.getReferenceById(cartId);
+        cart.setTotalPrice(cart.getTotalPrice()-(cartItem.getProductPrice()*cartItem.getQuantity()));
 
-
+        cartItemRepository.deleteCartItemByCartIdAndProductId(cartId, productId);
     }
 
     //Function that checks if the user has a cart and if not creates one

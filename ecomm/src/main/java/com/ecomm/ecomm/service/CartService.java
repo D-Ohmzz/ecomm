@@ -9,7 +9,8 @@ public interface CartService {
     CartResponseDTO addProductToCart(Long productId, Integer quantity);
     List<CartResponseDTO> getAllCarts();
     CartResponseDTO getCart(String email, Long cartId);
-
     @Transactional
     CartResponseDTO updateProductQuantityInCart(Long productId, Integer quantity);
+    @Transactional
+    void deleteProductFromCart(Long cartId, Long productId);
 }

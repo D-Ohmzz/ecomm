@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -56,9 +58,15 @@ public class CartController {
         CartResponseDTO cartResponseDTO = cartService.updateProductQuantityInCart(productId,
                 operation.equalsIgnoreCase("delete") ?-1:1);
         return new ResponseEntity<>(cartResponseDTO, HttpStatus.OK);
-
-
-
     }
 
+    @DeleteMapping("/public/carts/{cartId}/product/{productId}")
+    public ResponseEntity<Object> deleteProductFromCart(@PathVariable Long cartId,
+                                                        @PathVariable Long productId){
+        cartService.deleteProductFromCart(cartId, productId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Product removed from cart successfully!!!");
+        map.put("status", "true");
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }
