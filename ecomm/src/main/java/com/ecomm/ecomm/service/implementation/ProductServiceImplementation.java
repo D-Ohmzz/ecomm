@@ -1,15 +1,21 @@
 package com.ecomm.ecomm.service.implementation;
 
+import com.ecomm.ecomm.dto.mapper.CartMapper;
 import com.ecomm.ecomm.dto.mapper.ProductMapper;
 import com.ecomm.ecomm.dto.request.ProductUpdateRequestDTO;
+import com.ecomm.ecomm.dto.response.CartResponseDTO;
+import com.ecomm.ecomm.dto.response.ProductCartResponseDTO;
 import com.ecomm.ecomm.exceptions.APIException;
 import com.ecomm.ecomm.exceptions.ResourceNotFoundException;
+import com.ecomm.ecomm.model.Cart;
 import com.ecomm.ecomm.model.Category;
 import com.ecomm.ecomm.model.Product;
 import com.ecomm.ecomm.dto.request.ProductRequestDTO;
 import com.ecomm.ecomm.dto.response.ProductResponseDTO;
+import com.ecomm.ecomm.repository.CartRepository;
 import com.ecomm.ecomm.repository.CategoryRepository;
 import com.ecomm.ecomm.repository.ProductRepository;
+import com.ecomm.ecomm.service.CartService;
 import com.ecomm.ecomm.service.FileService;
 import com.ecomm.ecomm.service.ProductService;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -29,13 +36,19 @@ public class ProductServiceImplementation implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final FileService fileService;
+    private final CartRepository cartRepository;
+    private final CartMapper cartMapper;
+    private final CartService cartService;
     @Value("${project.image}")
     private String path;
-    public ProductServiceImplementation(CategoryRepository categoryRepository, ProductRepository productRepository, ProductMapper productMapper, FileService fileService){
+    public ProductServiceImplementation(CategoryRepository categoryRepository, ProductRepository productRepository, ProductMapper productMapper, FileService fileService, CartRepository cartRepository, CartMapper cartMapper, CartService cartService){
+        this.cartRepository=cartRepository;
         this.categoryRepository=categoryRepository;
         this.productRepository=productRepository;
         this.productMapper=productMapper;
         this.fileService=fileService;
+        this.cartMapper=cartMapper;
+        this.cartService=cartService;
     }
     @Override
     public void createProduct(ProductRequestDTO productRequestDTO, Long categoryId) {
@@ -70,12 +83,31 @@ public class ProductServiceImplementation implements ProductService {
         product.setCategory(category);
         product.setSpecialPrice(specialPrice);
         product.setId(id);
+
+        //this product has been saved and needs to be updated in the cart
         productRepository.save(product);
+
+        // Making sure that any changes made on product reflect on the product in the user's cart
+
+        List<Cart> carts = cartRepository.findCartsByProductId(id);
+        List<CartResponseDTO> cartResponseDTOs = carts.stream()
+                .map(cart -> {
+                    List<ProductCartResponseDTO> products = cart.getCartItems().stream()
+                            .map(item -> productMapper.convertToProductCartResponseDTO(item.getProduct()))
+                            .collect(Collectors.toList());
+                    return cartMapper.convertToCartResponseDTO(cart, products);
+                }).toList();
+
+        cartResponseDTOs.forEach(cart ->cartService.updateProductInCart(cart.cartId(), id));
+
     }
 
     @Override
     public void deleteProduct(Long id) {
         if(productRepository.existsById(id)){
+            //First delete the product from the associated carts before deleting from the db
+            List<Cart> carts = cartRepository.findCartsByProductId(id);
+            carts.forEach(cart->cartService.deleteProductFromCart(cart.getId(), id));
             productRepository.deleteById(id);
         }
         else{
