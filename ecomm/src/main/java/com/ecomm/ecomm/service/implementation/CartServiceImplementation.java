@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -215,6 +216,39 @@ public class CartServiceImplementation implements CartService {
         cartItemRepository.deleteCartItemByCartIdAndProductId(cartId, productId);
     }
 
+    @Override
+    public void updateProductInCart(Long cartId, Long productId) {
+        // Perform validations
+        // 1. Check if cart exists
+        Optional<Cart> cart = cartRepository.findById((cartId));
+        if(cart.isEmpty()){
+            throw new ResourceNotFoundException("Cart", "id", cartId);
+        }
+        // 2. Check if product with the provided is exists
+        Optional<Product> product = productRepository.findById((productId));
+        if(product.isEmpty()){
+            throw new ResourceNotFoundException("Product", "id", productId);
+        }
+        // 3. Check if the product with the provided id exists in the cart
+        // Check if the productId exists in the cart
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
+        if(cartItem == null){
+            throw new APIException("Product: "+product.get().getProductName()+" is not available in the cart !!!");
+        }
+
+        // 1000 - 100 * 2
+        double cartPrice = (cart.get().getTotalPrice()) - (cartItem.getProductPrice() * cartItem.getQuantity());
+
+        // 200
+        cartItem.setProductPrice(product.get().getSpecialPrice());
+
+        // 800 + (200 * 2) = 1200
+        cart.get().setTotalPrice(cartPrice);
+
+        cartItemRepository.save(cartItem);
+
+
+    }
     //Function that checks if the user has a cart and if not creates one
     public Cart createCart(){
         Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
